@@ -1,5 +1,6 @@
 dist: xenial
 language: ruby
+
 rvm:
   - 2.3
   - 2.4
@@ -9,9 +10,15 @@ rvm:
 
 matrix:
   include:
-    - rvm: *latest_ruby
+    - name: Profile Memory Usage
+      rvm: *latest_ruby
       script: rake dev:profile_memory
-      name: Profile Memory Usage
+    - name: HTML Validation
+      before_install:
+        - npm install vnu-jar
+      script:
+        - rake dev:generate_validation
+        - java -jar node_modules/vnu-jar/build/dist/vnu.jar --root _validation --no-langdetect
   allow_failures:
     - rvm: jruby-head
 

@@ -257,6 +257,23 @@ namespace :dev do
     load_paths = %w[lib test benchmark].join(File::PATH_SEPARATOR)
     ruby "-I #{load_paths} -r memory_profiler_preload test/test_files.rb"
   end
+
+  desc "Generate HTML files for validation"
+  task :generate_validation do
+    Dir['test/testcases/**/*.html'].each do |file|
+      new_content = '<!DOCTYPE html>'\
+        '<html lang="en">'\
+        "<head><title>Test</title></head>"\
+        "<body>#{File.read(file)}</body>"\
+        '</html>'
+      path = '_validation/' + file
+      dirname = File.dirname(path)
+      unless File.directory?(dirname)
+        FileUtils.mkdir_p(dirname)
+      end
+      File.write(path, new_content)
+    end
+  end
 end
 
 task gemspec: ['dev:gemspec']
